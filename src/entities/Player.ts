@@ -133,6 +133,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (input.jump && onGround) {
       body.setVelocityY(PLAYER_JUMP_VELOCITY);
       this.stateMachine.dispatch("jump");
+      EventBus.emit("player-jumped");
     }
   }
 
@@ -147,6 +148,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     this.isInvulnerable = true;
     this.remainingLives--;
+    EventBus.emit("player-damaged");
 
     this.scene.tweens.add({
       targets: this,

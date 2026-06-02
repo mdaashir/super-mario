@@ -172,10 +172,10 @@ description: "Task list for implementing the core platformer game feature"
 - [X] T063 [P] [US5] Create SettingsScene in src/scenes/SettingsScene.ts (settings display stub)
 - [X] T064 [P] [US5] Create PauseScene in src/scenes/PauseScene.ts (overlay scene: Resume, Quit to Menu)
 - [X] T065 [US5] Implement SaveSystem in src/systems/SaveSystem.ts (localStorage with checksum, rotating backup, version validation per contracts/save-schema.md)
-- [ ] T066 [US5] Integrate autosave (checkpoints, level/world completion) and manual save (pause menu) — SaveSystem built, wiring deferred
-- [ ] T067 [US5] Implement background music playback — AudioManager built, asset loading deferred
-- [ ] T068 [US5] Implement gameplay SFX — AudioManager built, asset loading deferred
-- [ ] T069 [US5] Add controller input support in InputManager — InputManager handles keyboard, gamepad deferred
+- [X] T066 [US5] Integrate autosave (checkpoints, level/world completion) and manual save (pause menu) — wired via checkpoint overlap and level complete callbacks
+- [X] T067 [US5] Implement background music playback — AudioManager wired: menu/world/victory music via ProceduralAudio
+- [X] T068 [US5] Implement gameplay SFX — AudioManager wired: jump/coin/stomp/powerup/damage/blockHit/checkpoint/levelComplete SFX
+- [X] T069 [US5] Add controller input support in InputManager — Gamepad API implemented in InputManager
 - [X] T070 [US5] Wire scene transitions (Boot -> Menu -> Game -> Pause -> GameOver/Victory -> Menu)
 
 **Checkpoint**: Full game loop: menu -> play -> save -> exit -> continue with all audio and settings

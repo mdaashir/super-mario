@@ -22,6 +22,8 @@ import { HUD } from "../ui/HUD";
 import { EventBus } from "../utils/EventBus";
 import { ObjectPool } from "../utils/ObjectPool";
 import { SaveSystem } from "../systems/SaveSystem";
+import { AudioManager } from "../audio/AudioManager";
+import { AudioAssets } from "../audio/AudioAssets";
 import { TILE_SIZE } from "../data/constants";
 
 const LEVEL_LAYOUT = [
@@ -73,6 +75,7 @@ export class GameScene extends Phaser.Scene {
   private playerSpawn: { x: number; y: number };
   private saveSystem!: SaveSystem;
   private coinPool!: ObjectPool<Coin>;
+  private audioManager!: AudioManager;
 
   constructor() {
     super({ key: "GameScene" });
@@ -130,6 +133,9 @@ export class GameScene extends Phaser.Scene {
 
     this.player = new Player(this, this.playerSpawn.x, this.playerSpawn.y);
 
+    this.audioManager = new AudioManager(this);
+    this.audioManager.playMusic(AudioAssets.music.world1);
+
     this.inputManager = new InputManager(this);
     this.movementSystem = new MovementSystem(this.player, this.inputManager);
     this.cameraSystem = new CameraSystem(this);
@@ -164,6 +170,7 @@ export class GameScene extends Phaser.Scene {
         if (!cp.isActivated) {
           cp.activate();
           this.activeCheckpoint = cp;
+          this.audioManager.playSfx(AudioAssets.sfx.checkpoint);
           this.saveSystem.save(this.buildSaveData({ x: cp.position.x, y: cp.position.y }, this.scoreSystem.getScore()));
         }
       });
@@ -213,6 +220,9 @@ export class GameScene extends Phaser.Scene {
     EventBus.on("extra-life", this.onExtraLife);
     EventBus.on("power-up-collected", this.onPowerUpChanged);
     EventBus.on("power-up-expired", this.onPowerUpChanged);
+    EventBus.on("player-jumped", this.onPlayerJumped);
+    EventBus.on("enemy-defeated", this.onEnemyDefeated);
+    EventBus.on("player-damaged", this.onPlayerDamaged);
 
     this.input.keyboard?.on("keydown-ESC", this.onPause);
 
@@ -229,6 +239,9 @@ export class GameScene extends Phaser.Scene {
     EventBus.off("extra-life", this.onExtraLife);
     EventBus.off("power-up-collected", this.onPowerUpChanged);
     EventBus.off("power-up-expired", this.onPowerUpChanged);
+    EventBus.off("player-jumped", this.onPlayerJumped);
+    EventBus.off("enemy-defeated", this.onEnemyDefeated);
+    EventBus.off("player-damaged", this.onPlayerDamaged);
     EventBus.off("coin-collected");
     EventBus.off("enemy-defeated");
     EventBus.off("level-complete");
@@ -248,6 +261,18 @@ export class GameScene extends Phaser.Scene {
 
   private onPowerUpChanged = (): void => {
     this.player.setPowerState(this.powerUpSystem.powerState);
+  };
+
+  private onPlayerJumped = (): void => {
+    this.audioManager.playSfx(AudioAssets.sfx.jump);
+  };
+
+  private onEnemyDefeated = (_score: unknown): void => {
+    this.audioManager.playSfx(AudioAssets.sfx.stomp);
+  };
+
+  private onPlayerDamaged = (): void => {
+    this.audioManager.playSfx(AudioAssets.sfx.damage);
   };
 
   update(_time: number, delta: number): void {
@@ -380,6 +405,7 @@ export class GameScene extends Phaser.Scene {
   private onCollectCoin(coin: Coin): void {
     if (coin.isCollected) return;
     coin.collect();
+    this.audioManager.playSfx(AudioAssets.sfx.coin);
     EventBus.emit("coin-collected", coin.scoreValue);
   }
 
@@ -387,6 +413,7 @@ export class GameScene extends Phaser.Scene {
     const contents = block.hit();
     if (!contents) return;
 
+    this.audioManager.playSfx(AudioAssets.sfx.blockHit);
     EventBus.emit("coin-collected", 100);
 
     if (contents !== "coin") {
@@ -422,6 +449,8 @@ export class GameScene extends Phaser.Scene {
     if (item.isCollected) return;
     item.collect();
 
+    this.audioManager.playSfx(AudioAssets.sfx.powerUp);
+
     const type =
       item instanceof Mushroom ? "mushroom" :
       item instanceof Star ? "star" : "fire-flower";
@@ -433,6 +462,8 @@ export class GameScene extends Phaser.Scene {
     if (this.levelComplete) return;
     this.levelComplete = true;
     if (this.levelTimerEvent) this.levelTimerEvent.destroy();
+
+    this.audioManager.playSfx(AudioAssets.sfx.levelComplete);
 
     const score = this.scoreSystem.getScore();
     EventBus.emit("level-complete", { levelId: this.levelId, score });

@@ -1,12 +1,19 @@
 import Phaser from "phaser";
 import { GAME_WIDTH, GAME_HEIGHT } from "../data/constants";
+import { AudioManager } from "../audio/AudioManager";
+import { AudioAssets } from "../audio/AudioAssets";
 
 export class MenuScene extends Phaser.Scene {
+  private audioManager!: AudioManager;
+
   constructor() {
     super({ key: "MenuScene" });
   }
 
   create(): void {
+    this.audioManager = new AudioManager(this);
+    this.audioManager.playMusic(AudioAssets.music.menu);
+
     this.add
       .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 80, "SUPER MARIO", {
         fontFamily: "monospace",
@@ -49,8 +56,20 @@ export class MenuScene extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
+    this.add
+      .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 + 85, "Press S for Settings", {
+        fontFamily: "monospace",
+        fontSize: "11px",
+        color: "#888888",
+      })
+      .setOrigin(0.5);
+
     this.input.keyboard?.on("keydown-ENTER", () => {
       this.scene.start("GameScene");
+    });
+
+    this.input.keyboard?.on("keydown-S", () => {
+      this.scene.start("SettingsScene");
     });
   }
 }

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { TILE_SIZE } from "../data/constants";
+import { generateAudioAssets } from "../audio/ProceduralAudio";
 
 export class BootScene extends Phaser.Scene {
   constructor() {
@@ -24,6 +25,8 @@ export class BootScene extends Phaser.Scene {
       bg.destroy();
       bar.destroy();
     });
+
+    generateAudioAssets(this.load.audio.bind(this.load));
   }
 
   create(): void {

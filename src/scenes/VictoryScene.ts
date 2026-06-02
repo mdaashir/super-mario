@@ -1,9 +1,12 @@
 import Phaser from "phaser";
 import { GAME_WIDTH, GAME_HEIGHT } from "../data/constants";
+import { AudioManager } from "../audio/AudioManager";
+import { AudioAssets } from "../audio/AudioAssets";
 
 export class VictoryScene extends Phaser.Scene {
   private levelId: string = "";
   private score: number = 0;
+  private audioManager!: AudioManager;
 
   constructor() {
     super({ key: "VictoryScene" });
@@ -15,6 +18,8 @@ export class VictoryScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.audioManager = new AudioManager(this);
+    this.audioManager.playMusic(AudioAssets.music.victory);
     this.add
       .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 60, "LEVEL COMPLETE!", {
         fontFamily: "monospace",

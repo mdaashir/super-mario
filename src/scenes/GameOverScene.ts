@@ -1,12 +1,18 @@
 import Phaser from "phaser";
 import { GAME_WIDTH, GAME_HEIGHT } from "../data/constants";
+import { AudioManager } from "../audio/AudioManager";
+import { AudioAssets } from "../audio/AudioAssets";
 
 export class GameOverScene extends Phaser.Scene {
+  private audioManager!: AudioManager;
+
   constructor() {
     super({ key: "GameOverScene" });
   }
 
   create(): void {
+    this.audioManager = new AudioManager(this);
+    this.audioManager.playSfx(AudioAssets.sfx.gameOver);
     this.add
       .text(GAME_WIDTH / 2, GAME_HEIGHT / 2 - 40, "GAME OVER", {
         fontFamily: "monospace",
