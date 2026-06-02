@@ -354,7 +354,7 @@ when collected in large form
 - **FR-025**: Worlds MUST unlock sequentially upon defeating the world boss
 - **FR-026**: Checkpoints MUST save player progress within a level
 - **FR-027**: Level timer MUST count down and trigger life loss at zero
-- **FR-028**: Hazards (pits, spikes, lava) MUST cause life loss on contact
+- **FR-028**: Hazards (pits, spikes, lava) MUST cause life loss on contact; at minimum, pit fall hazards (bottomless gaps with no ground below) MUST be implemented; additional hazard types (spikes, lava) are planned enhancements
 - **FR-029**: Moving platforms MUST transport the character along a path;
 the player MUST inherit platform velocity while standing on it;
 platforms MUST stop on wall collision; enemies MUST also ride platforms
@@ -387,8 +387,25 @@ speed increases, platform gap complexity, checkpoint frequency
 reduction, and shorter level timers
 - **FR-047**: Save data MUST include a checksum for integrity validation;
 a rotating backup save MUST be maintained and auto-restored if the
-primary save is corrupted; version mismatch MUST be detected and
-communicated to the user
+primary save is corrupted; version mismatch MUST be detected,
+communicated to the user, and treated as incompatible — the player
+MUST be prompted to start a new game when version mismatch is detected
+- **FR-048**: Player character MUST come to a stop upon horizontal contact
+with walls and solid level geometry; standard Arcade physics collision
+response applies (no sliding, bouncing, or wall-jumping from wall contact)
+- **FR-049**: Boss arena boundaries MUST prevent the player from leaving the
+encounter area; walls, floors, and invisible barriers MUST contain both the
+player and boss within the arena during the encounter
+- **FR-050**: Completed levels MUST be replayable; the Continue option MUST
+allow the player to resume from the last saved checkpoint position; a level
+select mechanism MAY be added to allow replaying any previously completed
+level
+- **FR-051**: HUD MUST display power-up timer countdown when a time-limited
+power-up (star, fire flower) is active, showing remaining duration
+- **FR-052**: Settings MUST include player-selectable difficulty presets
+(Normal, Easy) that affect enemy speed, damage taken, and timer duration;
+Easy mode MUST halve enemy speed, disable life loss from timer expiry, and
+provide infinite lives
 
 ### Key Entities *(include if feature involves data)*
 
@@ -474,3 +491,17 @@ feature
 - No online leaderboards, achievements, or social features
 - Boss mechanics are unique per boss and designed during implementation
 - Secret areas are optional content and do not block level completion
+- A world map or level selection screen is deferred beyond the initial
+MVP; the initial implementation starts levels directly from the menu
+via New Game or Continue
+- World visual theme differentiation (distinct tile sets, color palettes,
+backgrounds per world) is a planned enhancement for the post-MVP phase;
+initial release uses a single tile set across all worlds
+- Accessibility features (color-blind mode, UI text size options, audio
+visual cue alternatives) are acknowledged as important but deferred
+to a dedicated accessibility enhancement pass
+- The game over state restarts the current world — replaying individual
+completed levels from a menu is not required for the initial release
+- Save data migration across game versions is handled by the version
+mismatch detection in FR-047; automatic migration of save data between
+versions is not implemented in the initial release

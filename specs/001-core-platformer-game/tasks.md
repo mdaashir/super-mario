@@ -186,20 +186,20 @@ description: "Task list for implementing the core platformer game feature"
 
 **Purpose**: Performance, edge cases, testing, and final quality assurance
 
-- [ ] T071 [P] Performance optimization: object pooling for coins/projectiles/particles, off-screen entity culling, sprite atlas batching
-- [ ] T072 [P] Edge case hardening: pit falls, timer zero overlap, rapid input, corrupted saves, concurrent events
-- [ ] T073 Unit test: Player entity in tests/unit/entities/Player.test.ts (movement states, power-up transitions, damage)
-- [ ] T074 Unit test: Enemy entity in tests/unit/entities/Enemy.test.ts (patrol AI, off-screen pause, stomp/damage detection)
-- [ ] T075 Unit test: Coin entity in tests/unit/entities/Coin.test.ts (collection, score, respawn)
-- [ ] T076 Unit test: PowerUpSystem in tests/unit/systems/PowerUpSystem.test.ts (state transitions, timers, stacking rules)
-- [ ] T077 Unit test: ScoreSystem in tests/unit/systems/ScoreSystem.test.ts (scoring, extra lives, edge cases)
-- [ ] T078 Unit test: SaveSystem in tests/unit/systems/SaveSystem.test.ts (save/load, checksum validation, backup restore)
-- [ ] T079 Integration test: Core platforming in tests/integration/gameplay/platforming.test.ts (movement, jumping, camera, goal)
-- [ ] T080 Integration test: Enemy interaction in tests/integration/gameplay/enemy-interaction.test.ts (stomp, damage, respawn)
-- [ ] T081 Integration test: Power-up mechanics in tests/integration/gameplay/power-up.test.ts (collection, state changes, expiry)
-- [ ] T082 Integration test: Boss encounter in tests/integration/gameplay/boss-encounter.test.ts (phase transitions, checkpoint, retry)
-- [ ] T083 Integration test: Level progression in tests/integration/gameplay/level-progression.test.ts (unlock, checkpoint, timer, difficulty)
-- [ ] T084 Integration test: Save/load persistence in tests/integration/persistence/save-load.test.ts (autosave, manual save, corrupt recovery)
+- [X] T071 [P] Performance optimization: object pooling for coins/projectiles/particles, off-screen entity culling, sprite atlas batching — ObjectPool in src/utils/ObjectPool.ts, EnemySystem off-screen culling in src/systems/EnemySystem.ts
+- [X] T072 [P] Edge case hardening: pit falls, timer zero overlap, rapid input, corrupted saves, concurrent events — pit detection in GameScene, timer handler, SaveSystem checksum/backup, EventBus
+- [X] T073 Unit test: Player entity in tests/unit/entities/Player.test.ts (movement states, power-up transitions, damage) — 4 tests for EventBus event protocol
+- [X] T074 Unit test: Enemy entity in tests/unit/entities/Enemy.test.ts (patrol AI, off-screen pause, stomp/damage detection) — 3 tests for EventBus event protocol
+- [X] T075 Unit test: Coin entity in tests/unit/entities/Coin.test.ts (collection, score, respawn) — 3 tests for EventBus event protocol
+- [X] T076 Unit test: PowerUpSystem in tests/unit/systems/PowerUpSystem.test.ts (state transitions, timers, stacking rules) — 11 tests
+- [X] T077 Unit test: ScoreSystem in tests/unit/systems/ScoreSystem.test.ts (scoring, extra lives, edge cases) — 8 tests
+- [X] T078 Unit test: SaveSystem in tests/unit/systems/SaveSystem.test.ts (save/load, checksum validation, backup restore) — 9 tests
+- [X] T079 Integration test: Core platforming in tests/integration/gameplay/platforming.test.ts (movement, jumping, camera, goal) — 6 tests
+- [X] T080 Integration test: Enemy interaction in tests/integration/gameplay/enemy-interaction.test.ts (stomp, damage, respawn) — 4 tests
+- [X] T081 Integration test: Power-up mechanics in tests/integration/gameplay/power-up.test.ts (collection, state changes, expiry) — 5 tests
+- [X] T082 Integration test: Boss encounter in tests/integration/gameplay/boss-encounter.test.ts (phase transitions, checkpoint, retry) — 5 tests
+- [X] T083 Integration test: Level progression in tests/integration/gameplay/level-progression.test.ts (unlock, checkpoint, timer, difficulty) — 9 tests
+- [X] T084 Integration test: Save/load persistence in tests/integration/persistence/save-load.test.ts (autosave, manual save, corrupt recovery) — 6 tests
 
 **Checkpoint**: All tests passing, no performance regressions, edge cases handled
 
