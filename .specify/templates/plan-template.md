@@ -40,7 +40,17 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Gates are determined based on `.specify/memory/constitution.md`. All plans
+MUST verify compliance with:
+
+- **Product Quality**: No placeholder or mock implementations permitted
+- **Clean Architecture**: Modular, loosely coupled system design required
+- **Code Quality**: Single responsibilities, no dead code or unused assets
+- **Gameplay Quality**: Edge cases tested, visual/audio feedback, balanced difficulty
+- **Performance**: Optimized rendering, physics, collision, audio loops
+- **Security & Data Integrity**: Save data validation, fault-tolerant persistence
+- **Testing**: Automated tests for all major gameplay systems required
+- **Completion Criteria**: All 6 criteria met before feature is complete
 
 ## Project Structure
 
