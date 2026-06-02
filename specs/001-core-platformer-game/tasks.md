@@ -1,0 +1,301 @@
+---
+description: "Task list for implementing the core platformer game feature"
+---
+
+# Tasks: Core Platformer Game
+
+**Input**: Design documents from `specs/001-core-platformer-game/`
+
+**Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/
+
+**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
+
+**Tests**: Test tasks are included per constitution requirement (automated tests for all major gameplay systems).
+
+## Format: `[ID] [P?] [Story] Description`
+
+- **[P]**: Can run in parallel (different files, no dependencies)
+- **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
+- Include exact file paths in descriptions
+
+## Path Conventions
+
+- Single project at repository root: `src/`, `tests/`
+
+## Dependency Legend
+
+- `→ Txxx`: This task depends on task Txxx being complete first
+- `[P]`: Parallelizable with other [P] tasks in the same phase/story
+
+---
+
+## Phase 1: Setup (Shared Infrastructure)
+
+**Purpose**: Project initialization — scaffolding, toolchain, and directory structure
+
+- [ ] T001 Initialize npm project with package.json (dependencies: phaser@3.80+, vite@5.x, typescript@5.x, vitest)
+- [ ] T002 [P] Configure TypeScript in tsconfig.json (strict mode, ES modules)
+- [ ] T003 [P] Configure Vite in vite.config.ts (phaser plugin, dev server port 5173)
+- [ ] T004 [P] Configure Vitest in vitest.config.ts with Phaser headless test harness
+- [ ] T005 Create project directory structure (src/scenes/, src/entities/, src/systems/, src/level/, src/ui/, src/input/, src/audio/, src/data/, src/utils/, tests/)
+- [ ] T006 Create index.html shell with canvas container and viewport meta
+
+**Checkpoint**: Project builds and dev server starts successfully
+
+---
+
+## Phase 2: Foundational (Blocking Prerequisites)
+
+**⚠️ CRITICAL**: No user story work can begin until this phase is complete
+
+- [ ] T007 [P] Create EventBus utility in src/utils/EventBus.ts (typed event emitter with payloads from data-model.md)
+- [ ] T008 [P] Create StateMachine utility in src/utils/StateMachine.ts (generic state machine with transitions, entry/exit callbacks)
+- [ ] T009 [P] Create game constants in src/data/constants.ts (gravity, speeds, timings, tile sizes, score values)
+- [ ] T010 [P] Create LevelData types in src/level/LevelData.ts (TypeScript interfaces from contracts/level-schema.md)
+- [ ] T011 Create InputManager in src/input/InputManager.ts (keyboard input abstraction with key bindings)
+- [ ] T012 [P] Create KeyBindings in src/input/KeyBindings.ts (default and configurable key mappings)
+- [ ] T013 Create AudioManager in src/audio/AudioManager.ts (centralized audio control, volume, mute)
+- [ ] T014 [P] Create AudioAssets in src/audio/AudioAssets.ts (typed asset key references for all music/SFX)
+- [ ] T015 Create main.ts with Phaser.Game config (800x600, Arcade physics, scene list)
+- [ ] T016 Create BootScene in src/scenes/BootScene.ts (asset loading with progress bar)
+
+**Checkpoint**: Foundation ready — Phaser boots with input, audio, event bus, and asset loading
+
+---
+
+## Phase 3: User Story 1 - Core Platforming (Priority: P1) 🎯 MVP
+
+**Goal**: Player can move a character left/right, jump, and complete a level by reaching the goal flag. Camera follows the player.
+
+**Independent Test**: Load a level, move left/right, jump on platforms, reach goal flag. Verify camera follows player in both axes.
+
+### Implementation
+
+- [ ] T017 [P] [US1] Create GameScene in src/scenes/GameScene.ts (tilemap loading, entity spawning, game loop orchestration)
+- [ ] T018 [P] [US1] Create Player entity in src/entities/Player.ts (sprite, movement state machine, physics body)
+- [ ] T019 [P] [US1] Create PhysicsSystem in src/systems/PhysicsSystem.ts (arcade physics setup, gravity, collision groups)
+- [ ] T020 [US1] Create MovementSystem in src/systems/MovementSystem.ts (player movement state machine: idle/walking/running/jumping/falling)
+- [ ] T021 [P] [US1] Create CameraSystem in src/systems/CameraSystem.ts (horizontal + vertical follow with smooth lerp)
+- [ ] T022 [US1] Create CollisionSystem in src/systems/CollisionSystem.ts (tilemap collision, surface detection, goal flag trigger)
+- [ ] T023 [P] [US1] Create HUD in src/ui/HUD.ts (score display, lives, timer, power-up indicator)
+- [ ] T024 [P] [US1] Create LevelLoader in src/level/LevelLoader.ts (Tiled JSON map loading, entity placement parsing)
+- [ ] T025 [P] [US1] Create TileMapManager in src/level/TileMapManager.ts (render layers, collision tiles, tile property handling)
+- [ ] T026 [US1] Create first playable level JSON in src/data/levels/1-1.json (ground tiles, platforms, goal flag, no enemies)
+- [ ] T027 [US1] Wire all US1 components in GameScene (player spawns, physics runs, camera follows, HUD displays, level completes on flag)
+
+**Checkpoint**: Player can load level 1-1, move, jump, and reach the goal flag with HUD visible
+
+---
+
+## Phase 4: User Story 2 - Enemies, Coins, and Lives (Priority: P2)
+
+**Goal**: Player encounters patrol enemies (stomp to defeat), collects coins for score and extra lives, manages 3-life system with game over.
+
+**Independent Test**: Navigate a level with enemies and coins. Stomp an enemy. Collect coins (score increases). Take damage (lose life). Die (game over -> restart). Verify enemies respawn on restart.
+
+### Implementation
+
+- [ ] T028 [P] [US2] Create base Enemy class in src/entities/enemies/Enemy.ts (physics body, health, patrol bounds, off-screen pause)
+- [ ] T029 [P] [US2] Create PatrolEnemy in src/entities/enemies/PatrolEnemy.ts (patrol AI: reverse at boundaries, edge detection)
+- [ ] T030 [P] [US2] Create EnemySystem in src/systems/EnemySystem.ts (enemy spawning, AI updates, off-screen management)
+- [ ] T031 [P] [US2] Create Coin entity in src/entities/items/Coin.ts (collectible, score value, collection animation)
+- [ ] T032 [US2] Extend CollisionSystem for enemy stomp detection, side/bottom damage, coin overlap
+- [ ] T033 [P] [US2] Create ScoreSystem in src/systems/ScoreSystem.ts (score tracking, coin counting, extra life at 100 coins)
+- [ ] T034 [US2] Implement lives system in Player (3 lives, damage reduces lives, invulnerability frames after hit)
+- [ ] T035 [US2] Create GameOverScene in src/scenes/GameOverScene.ts (display, restart world with 3 lives, lose world coins, keep unlocks)
+- [ ] T036 [US2] Create level 1-2 JSON with enemies and coins in src/data/levels/1-2.json
+
+**Checkpoint**: Player stomps enemies, collects coins, gains extra lives, and experiences game over correctly
+
+---
+
+## Phase 5: User Story 3 - Power-ups and Interactive Blocks (Priority: P2)
+
+**Goal**: Player hits question blocks for coins/power-ups, finds hidden blocks, breaks destructible blocks, uses mushroom/star/fire flower power-ups.
+
+**Independent Test**: Hit question block -> mushroom emerges -> collect -> player grows. Take damage while large -> revert. Collect star -> invincible. Collect fire flower -> shoot projectiles. Hit destructible block -> breaks. Find secret area -> collect hidden items.
+
+### Implementation
+
+- [ ] T037 [P] [US3] Create base Block entity in src/entities/blocks/Block.ts (grid position, contents, state machine: full/empty/hidden/revealed/broken)
+- [ ] T038 [P] [US3] Create QuestionBlock in src/entities/blocks/QuestionBlock.ts (bump animation, item release, one-time use)
+- [ ] T039 [P] [US3] Create HiddenBlock in src/entities/blocks/HiddenBlock.ts (invisible until hit from below, reveal animation)
+- [ ] T040 [P] [US3] Create DestructibleBlock in src/entities/blocks/DestructibleBlock.ts (break animation, particle effect)
+- [ ] T041 [P] [US3] Create Mushroom power-up in src/entities/items/Mushroom.ts (emerge animation, movement, growth effect on player)
+- [ ] T042 [P] [US3] Create Star power-up in src/entities/items/Star.ts (bounce movement, invincibility timer, flash effect)
+- [ ] T043 [P] [US3] Create FireFlower in src/entities/items/FireFlower.ts (emerges from block, projectile shooting ability)
+- [ ] T044 [US3] Create PowerUpSystem in src/systems/PowerUpSystem.ts (state transitions per data-model.md, timers, visual sync)
+- [ ] T045 [US3] Extend Player with power-up state (visual size change, invincibility flash, projectile shooting, form-specific sprites)
+- [ ] T046 [US3] Extend CollisionSystem for block hits, power-up collection, projectile-enemy collision
+- [ ] T047 [US3] Create secret area support (trigger zones, hidden collectible placement, camera lock)
+
+**Checkpoint**: All power-up types functional, blocks interactive, secret areas discoverable
+
+---
+
+## Phase 6: User Story 4 - Level Progression, Worlds, and Bosses (Priority: P3)
+
+**Goal**: Multiple worlds with sequential level unlocking, checkpoints, moving platforms, hazards, timer, boss encounters, difficulty scaling, final boss.
+
+**Independent Test**: Complete level -> next level unlocks. Die at checkpoint -> respawn there. Complete world -> next world unlocks. Defeat boss -> progress. Reach final boss -> defeat -> victory.
+
+### Implementation
+
+- [ ] T048 [P] [US4] Create WorldMapScene in src/scenes/WorldMapScene.ts (world/level grid display, unlock state, navigation)
+- [ ] T049 [P] [US4] Create LevelSystem in src/systems/LevelSystem.ts (level unlock logic, world progression, difficulty scaling)
+- [ ] T050 [P] [US4] Create Boss base class in src/entities/enemies/Boss.ts (multi-phase AI, health bars, phase transitions per data-model.md)
+- [ ] T051 [US4] Implement world 1 boss encounter (arena bounds, checkpoint before arena, full-health restart on death)
+- [ ] T052 [US4] Implement final boss encounter in final world (multi-phase, victory trigger)
+- [ ] T053 [US4] Add moving platform logic in CollisionSystem (player inherits velocity, platform stops at walls, enemies ride)
+- [ ] T054 [US4] Add hazard detection (pits, spikes, lava) in CollisionSystem (instant life loss on contact)
+- [ ] T055 [US4] Implement level timer in GameScene (countdown display, life loss at zero, par time tracking)
+- [ ] T056 [US4] Implement checkpoint system (activation on pass-through, respawn at checkpoint, autosave trigger)
+- [ ] T057 [P] [US4] Add pipe structures as visual/functional level geometry
+- [ ] T058 [US4] Create VictoryScene in src/scenes/VictoryScene.ts (congratulations display, credits, return to menu)
+- [ ] T059 [US4] Implement difficulty scaling (enemy count/speed, platform gaps, checkpoint freq, timer length per world)
+- [ ] T060 [US4] Create remaining level JSON files (1-3, 2-1 through 2-3, 3-1 through 3-3)
+- [ ] T061 [US4] Create worlds.json in src/data/worlds.json (world definitions from contracts/level-schema.md)
+
+**Checkpoint**: Full game progression playable from world 1 to final boss victory
+
+---
+
+## Phase 7: User Story 5 - Game Systems and Polish (Priority: P3)
+
+**Goal**: Main menu, pause menu, settings, save/load, audio, controller support. Polished player experience.
+
+**Independent Test**: Launch -> main menu with New Game/Continue/Settings/Quit. Start game -> pause -> resume/quit. Adjust audio -> verify. Save -> exit -> relaunch -> Continue -> progress restored. Connect controller -> inputs map correctly.
+
+### Implementation
+
+- [ ] T062 [P] [US5] Create MenuScene in src/scenes/MenuScene.ts (New Game, Continue, Settings, Quit with animated background)
+- [ ] T063 [P] [US5] Create SettingsScene in src/scenes/SettingsScene.ts (music/SFX volume sliders, control remapping)
+- [ ] T064 [P] [US5] Create PauseScene in src/scenes/PauseScene.ts (overlay scene: Resume, Save, Quit to Menu)
+- [ ] T065 [US5] Implement SaveSystem in src/systems/SaveSystem.ts (localStorage with SHA-256 checksum, rotating backup, version validation per contracts/save-schema.md)
+- [ ] T066 [US5] Integrate autosave (checkpoints, level/world completion) and manual save (pause menu)
+- [ ] T067 [US5] Implement background music playback (per-world theme in GameScene/MenuScene)
+- [ ] T068 [US5] Implement gameplay SFX (coin collect, enemy defeat, power-up, jump, damage, block hit, boss roar)
+- [ ] T069 [US5] Add controller input support in InputManager (gamepad detection, axis mapping, button bindings)
+- [ ] T070 [US5] Wire scene transitions (Menu -> WorldMap -> Game -> Pause -> GameOver/Victory -> Menu)
+
+**Checkpoint**: Full game loop: menu -> play -> save -> exit -> continue with all audio and settings
+
+---
+
+## Phase 8: Polish & Cross-Cutting Concerns
+
+**Purpose**: Performance, edge cases, testing, and final quality assurance
+
+- [ ] T071 [P] Performance optimization: object pooling for coins/projectiles/particles, off-screen entity culling, sprite atlas batching
+- [ ] T072 [P] Edge case hardening: pit falls, timer zero overlap, rapid input, corrupted saves, concurrent events
+- [ ] T073 Unit test: Player entity in tests/unit/entities/Player.test.ts (movement states, power-up transitions, damage)
+- [ ] T074 Unit test: Enemy entity in tests/unit/entities/Enemy.test.ts (patrol AI, off-screen pause, stomp/damage detection)
+- [ ] T075 Unit test: Coin entity in tests/unit/entities/Coin.test.ts (collection, score, respawn)
+- [ ] T076 Unit test: PowerUpSystem in tests/unit/systems/PowerUpSystem.test.ts (state transitions, timers, stacking rules)
+- [ ] T077 Unit test: ScoreSystem in tests/unit/systems/ScoreSystem.test.ts (scoring, extra lives, edge cases)
+- [ ] T078 Unit test: SaveSystem in tests/unit/systems/SaveSystem.test.ts (save/load, checksum validation, backup restore)
+- [ ] T079 Integration test: Core platforming in tests/integration/gameplay/platforming.test.ts (movement, jumping, camera, goal)
+- [ ] T080 Integration test: Enemy interaction in tests/integration/gameplay/enemy-interaction.test.ts (stomp, damage, respawn)
+- [ ] T081 Integration test: Power-up mechanics in tests/integration/gameplay/power-up.test.ts (collection, state changes, expiry)
+- [ ] T082 Integration test: Boss encounter in tests/integration/gameplay/boss-encounter.test.ts (phase transitions, checkpoint, retry)
+- [ ] T083 Integration test: Level progression in tests/integration/gameplay/level-progression.test.ts (unlock, checkpoint, timer, difficulty)
+- [ ] T084 Integration test: Save/load persistence in tests/integration/persistence/save-load.test.ts (autosave, manual save, corrupt recovery)
+
+**Checkpoint**: All tests passing, no performance regressions, edge cases handled
+
+---
+
+## Dependencies & Execution Order
+
+### Phase Dependencies
+
+- **Setup (Phase 1)**: No dependencies — can start immediately
+- **Foundational (Phase 2)**: Depends on Setup completion — BLOCKS all user stories
+- **User Stories (Phase 3-7)**: All depend on Foundational phase completion
+  - US1 (P1) must be complete before US2 (enemies need platforms/player)
+  - US2 (P2) can start after US1 (enemies need player collision)
+  - US3 (P2) can start after US1 (blocks need player collision)
+  - US4 (P3) depends on US1 + US2 + US3 (bosses need enemies/power-ups, levels need all mechanics)
+  - US5 (P3) can start partially after Phase 2 (menus, save system independent), but full integration needs all stories
+- **Polish (Phase 8)**: Depends on all user stories being complete
+
+### User Story Dependencies
+
+- **US1 (P1)**: No story dependencies — starts after Foundational
+- **US2 (P2)**: Depends on US1 (player, collision, camera needed)
+- **US3 (P2)**: Depends on US1 (player, collision, camera needed)
+- **US4 (P3)**: Depends on US1 + US2 + US3 (worlds need core+enemies+power-ups)
+- **US5 (P3)**: Partially independent (menus, audio, settings after Phase 2); full integration needs all stories
+
+### Within Each User Story
+
+- Core entity before systems
+- Systems before integration/scene wiring
+- Story self-contained and testable before moving to next
+
+---
+
+### Parallel Opportunities
+
+- All Phase 1 [P] tasks can run in parallel
+- All Phase 2 [P] tasks can run in parallel
+- US2 and US3 can be developed in parallel (both depend on US1 only)
+- Within each story: [P] entity tasks can run in parallel
+- All test tasks in Phase 8 marked [P] can run in parallel
+
+---
+
+## Parallel Example: Phase 2 (Foundational)
+
+```bash
+# Launch all Phase 2 [P] tasks together:
+Task: "Create EventBus utility in src/utils/EventBus.ts"
+Task: "Create StateMachine utility in src/utils/StateMachine.ts"
+Task: "Create game constants in src/data/constants.ts"
+Task: "Create LevelData types in src/level/LevelData.ts"
+Task: "Create AudioAssets in src/audio/AudioAssets.ts"
+Task: "Create KeyBindings in src/input/KeyBindings.ts"
+```
+
+---
+
+## Implementation Strategy
+
+### MVP First (Phases 1-3)
+
+1. Complete Phase 1: Setup
+2. Complete Phase 2: Foundational
+3. Complete Phase 3: US1 (Core Platforming)
+4. **STOP and VALIDATE**: Playable level with movement, jumping, camera, goal
+5. Demo-ready MVP exists
+
+### Incremental Delivery
+
+1. Setup + Foundational → Foundation ready
+2. US1 (Core Platforming) → Test independently → **MVP!**
+3. US2 (Enemies/Coins/Lives) → Test independently → Demo
+4. US3 (Power-ups/Blocks) → Test independently → Demo
+5. US4 (Worlds/Bosses/Progression) → Test independently → Beta
+6. US5 (Systems/Polish) → Test independently → Release Candidate
+7. Phase 8 (Polish/Tests) → **Release**
+
+### Parallel Team Strategy
+
+With multiple developers:
+1. Team completes Setup + Foundational together
+2. Once Foundational done:
+   - Developer A: US1 (Core Platforming)
+   - Developer B: US2 (Enemies) + US3 (Power-ups) [can start after US1]
+   - Developer C: US5 (Game Systems) [menus/save partially independent]
+3. US4 (Worlds/Bosses) integrates all prior work
+
+---
+
+## Notes
+
+- [P] tasks = different files, no dependencies
+- [Story] label maps task to specific user story for traceability
+- Each user story should be independently completable and testable
+- Commit after each phase or logical group
+- Stop at any checkpoint to validate story independently
+- Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
