@@ -9,6 +9,7 @@ import { FireFlower } from "../entities/items/FireFlower";
 import { QuestionBlock } from "../entities/blocks/QuestionBlock";
 import { MovingPlatform } from "../entities/MovingPlatform";
 import { Checkpoint } from "../entities/Checkpoint";
+import { Pipe } from "../entities/Pipe";
 import { InputManager } from "../input/InputManager";
 import { MovementSystem } from "../systems/MovementSystem";
 import { CameraSystem } from "../systems/CameraSystem";
@@ -16,9 +17,11 @@ import { CollisionSystem } from "../systems/CollisionSystem";
 import { EnemySystem } from "../systems/EnemySystem";
 import { ScoreSystem } from "../systems/ScoreSystem";
 import { PowerUpSystem } from "../systems/PowerUpSystem";
-import { LevelSystem } from "../systems/LevelSystem";
+import { LevelSystem, DifficultyFactors } from "../systems/LevelSystem";
 import { HUD } from "../ui/HUD";
 import { EventBus } from "../utils/EventBus";
+import { ObjectPool } from "../utils/ObjectPool";
+import { SaveSystem } from "../systems/SaveSystem";
 import { TILE_SIZE } from "../data/constants";
 
 const LEVEL_LAYOUT = [
@@ -27,12 +30,12 @@ const LEVEL_LAYOUT = [
   "                              c                             g",
   "                    C                                       g",
   "                   ppp ? ? c     c                           g",
-  "                                                            g",
-  "                                                            g",
-  "      e                M              c          ?          g",
-  "                   pppppp    ppp                            g",
-  "                                                            g",
-  "      pppp   c         c          c                         g",
+  "     H                                                      g",
+  "     I                                                      g",
+  "     I  e              M              c          ?          g",
+  "     I             pppppp    ppp                            g",
+  "     I                                                      g",
+  "  pppppp   c         c          c                           g",
   "                               S                            g",
   "                         !  ppppp    g                       g",
   "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg",
@@ -63,10 +66,13 @@ export class GameScene extends Phaser.Scene {
   private activeCheckpoint: Checkpoint | null = null;
   private boss: Boss | null = null;
   private levelTime: number = 300;
+  private difficultyFactors!: DifficultyFactors;
   private levelTimerEvent!: Phaser.Time.TimerEvent;
   private levelId: string = "1-1";
   private levelComplete: boolean = false;
   private playerSpawn: { x: number; y: number };
+  private saveSystem!: SaveSystem;
+  private coinPool!: ObjectPool<Coin>;
 
   constructor() {
     super({ key: "GameScene" });
@@ -92,12 +98,32 @@ export class GameScene extends Phaser.Scene {
     this.checkpoints = [];
     this.activeCheckpoint = null;
     this.boss = null;
-    this.levelTime = 300;
 
     this.scoreSystem = new ScoreSystem();
     this.powerUpSystem = new PowerUpSystem();
     this.enemySystem = new EnemySystem(this);
     this.levelSystem = new LevelSystem();
+    this.saveSystem = new SaveSystem();
+
+    const [worldStr, levelStrNum] = this.levelId.split("-");
+    this.difficultyFactors = this.levelSystem.getDifficultyFactors(
+      parseInt(worldStr, 10),
+      parseInt(levelStrNum, 10)
+    );
+    this.levelTime = this.difficultyFactors.timeLimit;
+
+    this.coinPool = new ObjectPool<Coin>(
+      () => new Coin(this, 0, 0),
+      (coin) => {
+        coin.isCollected = false;
+        coin.onRelease = () => this.coinPool.release(coin);
+        coin.setAlpha(1);
+        coin.setActive(true).setVisible(true);
+        const body = coin.body as Phaser.Physics.Arcade.Body;
+        body.enable = true;
+      },
+      5
+    );
 
     this.createLevel();
     this.spawnEntities();
@@ -138,6 +164,7 @@ export class GameScene extends Phaser.Scene {
         if (!cp.isActivated) {
           cp.activate();
           this.activeCheckpoint = cp;
+          this.saveSystem.save(this.buildSaveData({ x: cp.position.x, y: cp.position.y }, this.scoreSystem.getScore()));
         }
       });
     }
@@ -167,11 +194,13 @@ export class GameScene extends Phaser.Scene {
 
     this.levelTimerEvent = this.time.addEvent({
       delay: 1000,
-      repeat: this.levelTime - 1,
+      loop: true,
       callback: () => {
+        if (this.levelComplete) return;
         this.levelTime--;
         this.hud.updateTimer(this.levelTime);
         if (this.levelTime <= 0) {
+          this.levelTimerEvent.destroy();
           this.player.takeDamage();
           if (this.player.isDead()) {
             this.scene.start("GameOverScene");
@@ -180,32 +209,51 @@ export class GameScene extends Phaser.Scene {
       },
     });
 
-    EventBus.on("score-updated", (score: unknown) => {
-      this.hud.updateScore(typeof score === "number" ? score : 0);
-    });
+    EventBus.on("score-updated", this.onScoreUpdated);
+    EventBus.on("extra-life", this.onExtraLife);
+    EventBus.on("power-up-collected", this.onPowerUpChanged);
+    EventBus.on("power-up-expired", this.onPowerUpChanged);
 
-    EventBus.on("extra-life", () => {
-      this.player.remainingLives++;
-      this.hud.updateLives(this.player.remainingLives);
-    });
+    this.input.keyboard?.on("keydown-ESC", this.onPause);
 
-    EventBus.on("power-up-collected", () => {
-      this.player.setPowerState(this.powerUpSystem.powerState);
-    });
-
-    EventBus.on("power-up-expired", () => {
-      this.player.setPowerState(this.powerUpSystem.powerState);
-    });
-
-    this.input.keyboard?.on("keydown-ESC", () => {
-      this.scene.pause();
-      this.scene.launch("PauseScene");
-    });
+    this.events.on("shutdown", this.cleanup, this);
   }
+
+  private onPause = (): void => {
+    this.scene.pause();
+    this.scene.launch("PauseScene");
+  };
+
+  private cleanup(): void {
+    EventBus.off("score-updated", this.onScoreUpdated);
+    EventBus.off("extra-life", this.onExtraLife);
+    EventBus.off("power-up-collected", this.onPowerUpChanged);
+    EventBus.off("power-up-expired", this.onPowerUpChanged);
+    EventBus.off("coin-collected");
+    EventBus.off("enemy-defeated");
+    EventBus.off("level-complete");
+    EventBus.off("world-complete");
+    EventBus.off("bonus-points");
+    EventBus.off("player-died");
+  }
+
+  private onScoreUpdated = (score: unknown): void => {
+    this.hud.updateScore(typeof score === "number" ? score : 0);
+  };
+
+  private onExtraLife = (): void => {
+    this.player.remainingLives++;
+    this.hud.updateLives(this.player.remainingLives);
+  };
+
+  private onPowerUpChanged = (): void => {
+    this.player.setPowerState(this.powerUpSystem.powerState);
+  };
 
   update(_time: number, delta: number): void {
     if (this.levelComplete) return;
 
+    this.inputManager.update();
     this.movementSystem.update();
     this.enemySystem.update();
     this.powerUpSystem.update(delta);
@@ -242,8 +290,10 @@ export class GameScene extends Phaser.Scene {
         const x = col * TILE_W + TILE_W / 2;
         const y = row * TILE_H + TILE_H / 2;
 
-        if (ch === "g" || ch === "p") {
-          const texture = ch === "g" ? "tile-ground" : "tile-platform";
+        if (ch === "g" || ch === "p" || ch === "I") {
+          const texture =
+            ch === "g" ? "tile-ground" :
+            ch === "I" ? "pipe-body" : "tile-platform";
           this.platforms.create(x, y, texture);
         }
       }
@@ -267,13 +317,23 @@ export class GameScene extends Phaser.Scene {
 
         switch (ch) {
           case "e": {
-            const enemy = new PatrolEnemy(this, x, y, x - 2 * TILE_W, x + 2 * TILE_W, 60);
+            const speed = Math.round(60 * this.difficultyFactors.enemySpeedMultiplier);
+            const patrolRange = Math.round(2 * TILE_W * this.difficultyFactors.enemySpeedMultiplier);
+            const enemy = new PatrolEnemy(this, x, y, x - patrolRange, x + patrolRange, speed);
             this.enemySystem.addEnemy(enemy);
             break;
           }
-          case "c":
-            new Coin(this, x, y);
+          case "c": {
+            const coin = this.coinPool.get();
+            coin.setPosition(x, y);
+            coin.onRelease = () => this.coinPool.release(coin);
+            coin.setActive(true).setVisible(true);
+            const coinBody = coin.body as Phaser.Physics.Arcade.Body;
+            coinBody.enable = true;
+            coinBody.setAllowGravity(false);
+            coinBody.setImmovable(true);
             break;
+          }
           case "?": {
             const block = new QuestionBlock(this, x, y, "coin");
             this.questionBlocks.push(block);
@@ -295,8 +355,13 @@ export class GameScene extends Phaser.Scene {
             break;
           }
           case "S": {
-            const boss = new Boss(this, x, y, "enemy-patrol", 5, [0.5]);
+            const bossHealth = Math.round(5 * this.difficultyFactors.bossHealthMultiplier);
+            const boss = new Boss(this, x, y, "enemy-patrol", bossHealth, [0.5]);
             this.boss = boss;
+            break;
+          }
+          case "H": {
+            new Pipe(this, x, y, 2);
             break;
           }
         }
@@ -368,7 +433,32 @@ export class GameScene extends Phaser.Scene {
     if (this.levelComplete) return;
     this.levelComplete = true;
     if (this.levelTimerEvent) this.levelTimerEvent.destroy();
-    EventBus.emit("level-complete", { levelId: this.levelId, score: this.scoreSystem.getScore() });
-    this.scene.start("VictoryScene", { levelId: this.levelId, score: this.scoreSystem.getScore() });
+
+    const score = this.scoreSystem.getScore();
+    EventBus.emit("level-complete", { levelId: this.levelId, score });
+
+    const checkpointPos = this.activeCheckpoint ? { x: this.activeCheckpoint.position.x, y: this.activeCheckpoint.position.y } : null;
+    this.saveSystem.save(this.buildSaveData(checkpointPos, score));
+
+    this.scene.start("VictoryScene", { levelId: this.levelId, score });
+  }
+
+  private buildSaveData(
+    checkpointPosition: { x: number; y: number } | null,
+    score: number
+  ): Parameters<SaveSystem["save"]>[0] {
+    return {
+      currentWorld: parseInt(this.levelId.split("-")[0], 10),
+      currentLevel: parseInt(this.levelId.split("-")[1], 10),
+      checkpointPosition,
+      score,
+      remainingLives: this.player.remainingLives,
+      unlockedWorlds: this.levelSystem.getProgress().unlockedWorlds,
+      unlockedLevels: this.levelSystem.getProgress().unlockedLevels,
+      audioSettings: { musicVolume: 50, sfxVolume: 50 },
+      controlBindings: {},
+      totalCoinsCollected: this.scoreSystem.getCoinsCollected(),
+      worldHighScores: this.levelSystem.getProgress().highScores,
+    };
   }
 }

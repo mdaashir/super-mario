@@ -6,6 +6,12 @@ export interface LevelProgress {
   highScores: Record<string, number>;
 }
 
+export interface DifficultyFactors {
+  enemySpeedMultiplier: number;
+  bossHealthMultiplier: number;
+  timeLimit: number;
+}
+
 export class LevelSystem {
   private progress: LevelProgress = {
     unlockedWorlds: [1],
@@ -44,6 +50,17 @@ export class LevelSystem {
 
   getLevelsInWorld(worldId: number): number {
     return this.worldLevels[worldId] ?? 3;
+  }
+
+  getDifficultyFactors(worldId: number, levelNum: number): DifficultyFactors {
+    const worldMultiplier = 1 + (worldId - 1) * 0.15;
+    const levelBonus = (levelNum - 1) * 0.05;
+    const combined = worldMultiplier + levelBonus;
+    return {
+      enemySpeedMultiplier: Math.min(combined, 2.0),
+      bossHealthMultiplier: Math.min(worldMultiplier, 2.5),
+      timeLimit: Math.max(300 - (worldId - 1) * 30 - (levelNum - 1) * 10, 100),
+    };
   }
 
   getHighScore(levelId: string): number {

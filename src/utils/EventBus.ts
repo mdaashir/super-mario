@@ -10,13 +10,17 @@ export const EventBus = {
     events.get(event)!.add(callback);
   },
 
-  off(event: string, callback: EventCallback): void {
-    const callbacks = events.get(event);
-    if (callbacks) {
-      callbacks.delete(callback);
-      if (callbacks.size === 0) {
-        events.delete(event);
+  off(event: string, callback?: EventCallback): void {
+    if (callback) {
+      const callbacks = events.get(event);
+      if (callbacks) {
+        callbacks.delete(callback);
+        if (callbacks.size === 0) {
+          events.delete(event);
+        }
       }
+    } else {
+      events.delete(event);
     }
   },
 

@@ -54,6 +54,18 @@ export class BootScene extends Phaser.Scene {
     rect("powerup-fireflower", 0xff4444, 14, 14);
     rect("goal-flag", 0x00cc00, 8, 48);
 
+    const pipeTopGfx = this.make.graphics({ x: 0, y: 0 });
+    pipeTopGfx.fillStyle(0x00aa00);
+    pipeTopGfx.fillRect(0, 0, s, s);
+    pipeTopGfx.fillStyle(0x00dd00);
+    pipeTopGfx.fillRect(1, 1, s - 2, s / 2);
+    pipeTopGfx.lineStyle(2, 0x006600);
+    pipeTopGfx.strokeRect(0, 0, s, s);
+    pipeTopGfx.generateTexture("pipe-top", s, s);
+    pipeTopGfx.destroy();
+
+    rect("pipe-body", 0x00aa00);
+
     const playerGfx = this.make.graphics({ x: 0, y: 0 });
     playerGfx.fillStyle(0xe00000);
     playerGfx.fillRect(0, 4, 14, 20);

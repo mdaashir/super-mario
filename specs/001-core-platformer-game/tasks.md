@@ -150,9 +150,9 @@ description: "Task list for implementing the core platformer game feature"
 - [X] T054 [US4] Add hazard detection (pit fall detection in GameScene, instant death on fall)
 - [X] T055 [US4] Implement level timer in GameScene (countdown display, life loss at zero)
 - [X] T056 [US4] Implement checkpoint system in src/entities/Checkpoint.ts (activation on pass-through, respawn at checkpoint)
-- [ ] T057 [P] [US4] Add pipe structures as visual/functional level geometry (deferred — requires tileset assets)
+- [X] T057 [P] [US4] Add pipe structures in src/entities/Pipe.ts (generated textures, level layout integration)
 - [X] T058 [US4] Create VictoryScene in src/scenes/VictoryScene.ts (level/score display, continue to next level)
-- [ ] T059 [US4] Implement difficulty scaling (deferred — LevelSystem has structure, scaling factors need level design)
+- [X] T059 [US4] Implement difficulty scaling in LevelSystem.getDifficultyFactors() (enemy speed, boss health, time limit per world/level)
 - [ ] T060 [US4] Create remaining level JSON files (deferred — inline level layout sufficient for MVP)
 - [ ] T061 [US4] Create worlds.json in src/data/worlds.json (deferred — needs WorldMapScene)
 
