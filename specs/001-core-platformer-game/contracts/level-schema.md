@@ -36,7 +36,7 @@ Each entity placed in Tiled uses an object with type and custom properties:
 ```typescript
 // Enemy spawn
 interface EnemyObject {
-  type: "patrol-enemy" | "chase-enemy" | "flying-enemy";
+  type: "patrol-enemy";
   x: number;
   y: number;
   width: number;

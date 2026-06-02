@@ -105,6 +105,17 @@ provides clean separation without ECS framework overhead.
 (e.g., "coin-collected", "player-damaged", "boss-defeated") allow loose
 coupling. Systems subscribe to relevant events and respond.
 
+### Controller Input Standard
+
+**Decision**: Browser Gamepad API
+
+**Rationale**: The Gamepad API is the browser-native standard for controller input. It provides a hardware-agnostic abstraction layer that works with Xbox, PlayStation, and generic HID gamepads — the broadest compatibility without platform-specific code.
+
+**Alternatives considered**:
+- **XInput-only**: Windows-only, excludes macOS/Linux.
+- **DirectInput**: Lower-level, inconsistent browser support.
+- **Custom mapping per controller**: Not maintainable for the scope.
+
 ### State Machine Pattern
 
 **Decision**: Generic state machine for player and boss AI

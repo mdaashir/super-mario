@@ -95,7 +95,7 @@ falling ──land────────→ idle/walking
 | Field | Type | Description |
 |-------|------|-------------|
 | id | string | Unique enemy instance ID |
-| type | EnemyType | patrol, chase, jump, flying |
+| type | EnemyType | patrol |
 | position | Vector2 | Spawn/current position |
 | patrolLeft | number | Left patrol boundary |
 | patrolRight | number | Right patrol boundary |
