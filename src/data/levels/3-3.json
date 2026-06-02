@@ -1,0 +1,24 @@
+{
+  "levelId": "3-3",
+  "worldId": 3,
+  "levelNumber": 3,
+  "levelName": "The Final Battle",
+  "timeLimit": 180,
+  "hasBoss": true,
+  "layout": [
+    "                                                            g",
+    "                                                            g",
+    "                                                            g",
+    "                    C                                       g",
+    "                   ppp                                      g",
+    "  H                    e              e                     g",
+    "  I              pppppp    pppp    pppppp    pppp           g",
+    "  I              e              e              e           g",
+    "  I                                                         g",
+    "  I                          c                              g",
+    "  pppp          c         pppp    pppp     c    pppp        g",
+    "                                                            g",
+    "                         pppppp         pppppp    S         g",
+    "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+}

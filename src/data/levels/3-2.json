@@ -1,0 +1,24 @@
+{
+  "levelId": "3-2",
+  "worldId": 3,
+  "levelNumber": 2,
+  "levelName": "Inner Keep",
+  "timeLimit": 200,
+  "hasBoss": false,
+  "layout": [
+    "                                                            g",
+    "                                                            g",
+    "                              c c c           c c          g",
+    "                    C          M               M           g",
+    "                   ppp   ?          c                      g",
+    "  H                   e          pppp                      g",
+    "  I          e                                            g",
+    "  I      pppppp    pppp      pppp      pppp                g",
+    "  I                               c                        g",
+    "  I                                            c          g",
+    "  pppp          c           pppp   ?         pppp           g",
+    "           pppppp                  pppppp                   g",
+    "       e            pppp                        pppp       g",
+    "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+}

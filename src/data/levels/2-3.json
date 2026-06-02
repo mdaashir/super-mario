@@ -1,0 +1,24 @@
+{
+  "levelId": "2-3",
+  "worldId": 2,
+  "levelNumber": 3,
+  "levelName": "Lava Caverns",
+  "timeLimit": 220,
+  "hasBoss": true,
+  "layout": [
+    "                                                            g",
+    "                                                            g",
+    "                                                            g",
+    "                    C                                       g",
+    "                   ppp                                      g",
+    "  H      e              e                  e                g",
+    "  I  pppppp    pppp         pppp    pppp                    g",
+    "  I                                         pppp            g",
+    "  I                                                         g",
+    "  I                                                         g",
+    "  pppp          c          c               pppp             g",
+    "                    pppppp         pppppp          S        g",
+    "                                                            g",
+    "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+}

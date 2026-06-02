@@ -1,0 +1,31 @@
+{
+  "worlds": [
+    {
+      "id": 1,
+      "name": "Grassland",
+      "theme": "grass",
+      "levelCount": 3,
+      "hasBoss": true,
+      "backgroundMusic": "music-world1",
+      "difficultyMultiplier": 1.0
+    },
+    {
+      "id": 2,
+      "name": "Underground",
+      "theme": "desert",
+      "levelCount": 3,
+      "hasBoss": true,
+      "backgroundMusic": "music-world2",
+      "difficultyMultiplier": 1.3
+    },
+    {
+      "id": 3,
+      "name": "Castle",
+      "theme": "castle",
+      "levelCount": 3,
+      "hasBoss": true,
+      "backgroundMusic": "music-world3",
+      "difficultyMultiplier": 1.6
+    }
+  ]
+}

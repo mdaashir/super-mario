@@ -1,0 +1,24 @@
+{
+  "levelId": "1-1",
+  "worldId": 1,
+  "levelNumber": 1,
+  "levelName": "Grassland Plains",
+  "timeLimit": 300,
+  "hasBoss": false,
+  "layout": [
+    "                                                            g",
+    "                                                            g",
+    "                              c                             g",
+    "                    C                                       g",
+    "                   ppp ? ? c     c                           g",
+    "     H                                                      g",
+    "     I                                                      g",
+    "     I  e              M              c          ?          g",
+    "     I             pppppp    ppp                            g",
+    "     I                                                      g",
+    "  pppppp   c         c          c                           g",
+    "                               S                            g",
+    "                         !  ppppp    g                       g",
+    "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+}

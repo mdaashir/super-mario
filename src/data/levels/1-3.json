@@ -1,0 +1,24 @@
+{
+  "levelId": "1-3",
+  "worldId": 1,
+  "levelNumber": 3,
+  "levelName": "Bowser's Meadow",
+  "timeLimit": 240,
+  "hasBoss": true,
+  "layout": [
+    "                                                            g",
+    "                                                            g",
+    "                                                            g",
+    "                    C                                       g",
+    "                   ppp                                      g",
+    "  H                                                         g",
+    "  I            e                     e                      g",
+    "  I        pppppp    pppp    pppp    ppp   pppp             g",
+    "  I                                                         g",
+    "  I                                  c                      g",
+    "  pppp          c          c               ppp    ppp       g",
+    "                                                        S   g",
+    "                           pppppp          pppppp           g",
+    "gggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "levelId": "3-1",
+  "worldId": 3,
+  "levelNumber": 1,
+  "levelName": "Fortress Gate",
+  "timeLimit": 220,
+  "hasBoss": false,
+  "layout": [
+    "                                                            g",
+    "                                                            g",
+    "                                          c   c            g",
+    "                    C         c            ppp             g",
+    "                   ppp   ?         c                c      g",
+    "  H                                     e                  g",
+    "  I           e              pppppp                        g",
+    "  I       pppppp    pppp                    pppp           g",
+    "  I                                                      e g",
+    "  I                                            c          g",
+    "  pppp          c     pppp    c           pppp ?           g",
+    "              pppppp         pppppp          pppp           g",
+    "       !                                          pppp     g",
+    "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+}

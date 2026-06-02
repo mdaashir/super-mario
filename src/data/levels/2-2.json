@@ -1,0 +1,24 @@
+{
+  "levelId": "2-2",
+  "worldId": 2,
+  "levelNumber": 2,
+  "levelName": "Crystal Caves",
+  "timeLimit": 230,
+  "hasBoss": false,
+  "layout": [
+    "                                                            g",
+    "                                                            g",
+    "                              c   c   c                     g",
+    "                    C             M                         g",
+    "                   ppp   ?                          c      g",
+    "  H                                         e              g",
+    "  I      e                    pppppp                        g",
+    "  I  pppppp   pppp     pppp                pppp            g",
+    "  I                                    c                    g",
+    "  I                                           c            g",
+    "  pppp     c          c              pppp  ?                g",
+    "                    pppppp                       pppp      g",
+    "             !           e             ppppp               g",
+    "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "levelId": "2-1",
+  "worldId": 2,
+  "levelNumber": 1,
+  "levelName": "Desert Sands",
+  "timeLimit": 250,
+  "hasBoss": false,
+  "layout": [
+    "                                                            g",
+    "                                                            g",
+    "                                                            g",
+    "                                          c                 g",
+    "                   ppp   ?         c    ppp                 g",
+    "     H                   e                                  g",
+    "     I                               c                      g",
+    "     I        pppppp         pppp          pppp             g",
+    "     I                                                      g",
+    "     I                                          c          g",
+    "  pppppp   c      c       C            pppp  ?              g",
+    "                         ppppp                              g",
+    "                             e          ppppp               g",
+    "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+}

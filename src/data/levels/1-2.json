@@ -1,0 +1,24 @@
+{
+  "levelId": "1-2",
+  "worldId": 1,
+  "levelNumber": 2,
+  "levelName": "Underground Passage",
+  "timeLimit": 260,
+  "hasBoss": false,
+  "layout": [
+    "                                                            g",
+    "                                                            g",
+    "                                          ccc              g",
+    "                    c                                       g",
+    "                   ppp  ?              c                    g",
+    "  H                                                         g",
+    "  I            e                            e               g",
+    "  I        pppppp            pppp          ppp?             g",
+    "  I                                                         g",
+    "  I                              C           c              g",
+    "  pppp     c         c               pppp                   g",
+    "                              !     ppppp                   g",
+    "                                      g                     g",
+    "ggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg"
+  ]
+}
