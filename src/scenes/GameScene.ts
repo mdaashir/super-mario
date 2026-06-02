@@ -468,6 +468,14 @@ export class GameScene extends Phaser.Scene {
     const score = this.scoreSystem.getScore();
     EventBus.emit("level-complete", { levelId: this.levelId, score });
 
+    const [worldStr, levelStrNum] = this.levelId.split("-");
+    const worldId = parseInt(worldStr, 10);
+    const levelNum = parseInt(levelStrNum, 10);
+    const totalLevels = this.levelSystem.getLevelsInWorld(worldId);
+    if (levelNum >= totalLevels) {
+      EventBus.emit("world-complete", worldId);
+    }
+
     const checkpointPos = this.activeCheckpoint ? { x: this.activeCheckpoint.position.x, y: this.activeCheckpoint.position.y } : null;
     this.saveSystem.save(this.buildSaveData(checkpointPos, score));
 

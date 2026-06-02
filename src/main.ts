@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { BootScene } from "./scenes/BootScene";
 import { MenuScene } from "./scenes/MenuScene";
 import { SettingsScene } from "./scenes/SettingsScene";
+import { WorldMapScene } from "./scenes/WorldMapScene";
 import { GameScene } from "./scenes/GameScene";
 import { PauseScene } from "./scenes/PauseScene";
 import { VictoryScene } from "./scenes/VictoryScene";
@@ -21,7 +22,7 @@ const config: Phaser.Types.Core.GameConfig = {
       debug: false,
     },
   },
-  scene: [BootScene, MenuScene, SettingsScene, GameScene, PauseScene, VictoryScene, GameOverScene],
+  scene: [BootScene, MenuScene, SettingsScene, WorldMapScene, GameScene, PauseScene, VictoryScene, GameOverScene],
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,

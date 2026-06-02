@@ -55,7 +55,7 @@ export class VictoryScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.input.keyboard?.on("keydown-ENTER", () => {
-      this.scene.start("GameScene", { levelId: this.levelId });
+      this.scene.start("WorldMapScene");
     });
   }
 }
