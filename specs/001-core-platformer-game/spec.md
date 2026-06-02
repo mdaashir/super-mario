@@ -28,6 +28,11 @@
 - Q: Game over / continue flow → A: Restart current world with 3 lives; lose collected coins from current world but keep world unlocks
 - Q: Save timing → A: Autosave at checkpoints and level/world completion; manual save in pause menu
 - Q: Difficulty progression variables → A: Enemy count, speed, platform complexity scale; fewer checkpoints; shorter timer per world
+- Q: Save data validation → A: Checksum validation with automatic backup restore
+- Q: Power-up acquisition while already powered → A: Mushroom while large gives bonus points; star overwrites all; fire while large switches to fire; star expiry reverts to pre-star state
+- Q: Boss checkpoint behavior → A: Checkpoint before boss arena; dying mid-boss restarts boss with full health, player keeps remaining lives
+- Q: Enemy off-screen behavior → A: Enemies pause physics when off-screen; retain state; resume on re-entry
+- Q: Moving platform physics → A: Player inherits platform velocity; platform stops at walls; enemies ride platforms
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -323,7 +328,8 @@ platforms)
 - **FR-007**: Level MUST contain a goal flag that completes the level on
 contact
 - **FR-008**: Ground-based enemies MUST patrol back and forth on their
-assigned path
+assigned path; enemies MUST pause physics updates when off-screen
+while retaining position and state, resuming on re-entry
 - **FR-009**: Player MUST defeat enemies when landing on them from above
 - **FR-010**: Player MUST take damage upon contacting an enemy from the
 side or below
@@ -338,7 +344,10 @@ side or below
 - **FR-019**: Star power-up MUST grant temporary invincibility
 - **FR-020**: Fire flower MUST allow the character to shoot projectiles
 temporarily
-- **FR-021**: Character MUST visually reflect its current power-up state
+- **FR-021**: Character MUST visually reflect its current power-up state;
+power-up states are mutually exclusive (only one active at a time) with
+star overwriting all other states and mushroom providing bonus points
+when collected in large form
 - **FR-022**: Taking damage while powered up MUST revert to normal form
 - **FR-023**: Game MUST contain multiple worlds, each with multiple levels
 - **FR-024**: Levels MUST unlock sequentially within a world
@@ -346,7 +355,9 @@ temporarily
 - **FR-026**: Checkpoints MUST save player progress within a level
 - **FR-027**: Level timer MUST count down and trigger life loss at zero
 - **FR-028**: Hazards (pits, spikes, lava) MUST cause life loss on contact
-- **FR-029**: Moving platforms MUST transport the character along a path
+- **FR-029**: Moving platforms MUST transport the character along a path;
+the player MUST inherit platform velocity while standing on it;
+platforms MUST stop on wall collision; enemies MUST also ride platforms
 - **FR-030**: Main menu MUST offer New Game, Continue, Settings, Quit
 - **FR-031**: Pause menu MUST suspend gameplay during menus
 - **FR-032**: Settings MUST allow audio volume and control configuration
@@ -362,7 +373,9 @@ completion; manual save MUST be available from the pause menu
 - **FR-039**: Each world MUST feature a boss encounter at its end
 - **FR-040**: Final world MUST contain a final boss that ends the game
 - **FR-041**: Boss enemies MUST require multiple hits or specific mechanics
-to defeat
+to defeat; a checkpoint MUST activate before the boss arena entrance;
+dying during a boss fight MUST restart the encounter with the boss at
+full health while the player retains remaining lives
 - **FR-042**: Secret areas MUST be accessible within levels
 - **FR-043**: Hidden collectibles MUST be present in secret areas
 - **FR-044**: Enemies MUST respawn to original positions when a level
@@ -372,6 +385,10 @@ checkpoint position, and settings
 - **FR-046**: Difficulty MUST increase across worlds via enemy count and
 speed increases, platform gap complexity, checkpoint frequency
 reduction, and shorter level timers
+- **FR-047**: Save data MUST include a checksum for integrity validation;
+a rotating backup save MUST be maintained and auto-restored if the
+primary save is corrupted; version mismatch MUST be detected and
+communicated to the user
 
 ### Key Entities *(include if feature involves data)*
 
@@ -425,7 +442,8 @@ and update in real-time during gameplay
 - **SC-005**: Game can be played from first level to victory screen
 without crashes, freezes, or unrecoverable states
 - **SC-006**: Save data preserves player progress accurately across game
-restarts
+restarts; corrupted saves are detected and gracefully recovered from
+backup without data loss or crashes
 - **SC-007**: All menu screens navigate correctly and respond to input
 within one second
 - **SC-008**: Audio effects play within 200ms of their triggering gameplay
