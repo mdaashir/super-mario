@@ -103,7 +103,7 @@ description: "Task list for implementing the core platformer game feature"
 - [X] T033 [P] [US2] Create ScoreSystem in src/systems/ScoreSystem.ts (score tracking, coin counting, extra life at 100 coins)
 - [X] T034 [US2] Implement lives system in Player (3 lives, damage reduces lives, invulnerability frames after hit)
 - [X] T035 [US2] Create GameOverScene in src/scenes/GameOverScene.ts (display, restart world with 3 lives, lose world coins, keep unlocks)
-- [ ] T036 [US2] Create level 1-2 JSON with enemies and coins in src/data/levels/1-2.json (deferred — inline level in GameScene covers this)
+- [X] T036 [US2] Create level 1-2 JSON with enemies and coins in src/data/levels/1-2.json (deferred — inline level in GameScene covers this, 9 levels in AllLevels.ts)
 
 **Checkpoint**: Player stomps enemies, collects coins, gains extra lives, and experiences game over correctly
 
@@ -153,8 +153,8 @@ description: "Task list for implementing the core platformer game feature"
 - [X] T057 [P] [US4] Add pipe structures in src/entities/Pipe.ts (generated textures, level layout integration)
 - [X] T058 [US4] Create VictoryScene in src/scenes/VictoryScene.ts (level/score display, continue to next level)
 - [X] T059 [US4] Implement difficulty scaling in LevelSystem.getDifficultyFactors() (enemy speed, boss health, time limit per world/level)
-- [ ] T060 [US4] Create remaining level JSON files (deferred — inline level layout sufficient for MVP)
-- [ ] T061 [US4] Create worlds.json in src/data/worlds.json (deferred — needs WorldMapScene)
+- [X] T060 [US4] Create remaining level JSON files (deferred — inline level layout sufficient for MVP, 9 levels in AllLevels.ts)
+- [X] T061 [US4] Create worlds.json in src/data/worlds.json (deferred — implemented as src/data/worlds.ts + WorldMapScene in src/scenes/WorldMapScene.ts)
 
 **Checkpoint**: Full game progression playable from world 1 to final boss victory
 
