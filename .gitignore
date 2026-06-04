@@ -7,3 +7,5 @@ Thumbs.db
 *.tmp
 *.swp
 coverage/
+e2e/screenshots/
+*.auth-state.json
