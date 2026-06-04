@@ -23,12 +23,7 @@ export class InputManager {
     if (!scene.input.keyboard) return;
     for (const action of Object.keys(this.bindings) as (keyof KeyBindings)[]) {
       const keyCode = this.bindings[action];
-      const parsed = keyCode.startsWith("Key")
-        ? (Phaser.Input.Keyboard.KeyCodes as Record<string, number>)[keyCode.replace("Key", "")]
-        : (Phaser.Input.Keyboard.KeyCodes as Record<string, number>)[keyCode];
-      if (parsed !== undefined) {
-        this.keys[action] = scene.input.keyboard.addKey(parsed);
-      }
+      this.keys[action] = scene.input.keyboard.addKey(keyCode);
     }
   }
 

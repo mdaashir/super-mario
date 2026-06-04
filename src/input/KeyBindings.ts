@@ -8,10 +8,10 @@ export interface KeyBindings {
 }
 
 export const DEFAULT_KEY_BINDINGS: KeyBindings = {
-  moveLeft: "ArrowLeft",
-  moveRight: "ArrowRight",
-  jump: "ArrowUp",
-  run: "Shift",
-  pause: "Escape",
-  fire: "KeyZ",
+  moveLeft: "LEFT",
+  moveRight: "RIGHT",
+  jump: "UP",
+  run: "SHIFT",
+  pause: "ESC",
+  fire: "Z",
 };
